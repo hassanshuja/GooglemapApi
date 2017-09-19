@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		html, body, #mapcanvas { margin: 0; padding: 0; height: 100% }
+		/* Always set the map height explicitly to define the size of the div
+ * element that contains the map. */
+
+/* Optional: Makes the sample page fill the window. */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#floating-panel {
+  position: absolute;
+  top: 10px;
+  left: 25%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+}
+#floating-panel-under {
+  position: absolute;
+  bottom: 20px;
+  left: 45%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+}
+	</style>
+
+</head>
+<body>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<div id="mapcanvas"></div>
+
+</body>
+</html>
+<script type="text/javascript">
+	 var map;
+
+     function initialize() {
+
+
+ 
+         //map = new google.maps.Map(document.getElementById('mapcanvas'), mapOptions);
+         var styledMapType = new google.maps.StyledMapType(
+            [
+              {elementType: 'geometry', stylers: [{color: '#ebe3cd'}]},
+              {elementType: 'labels.text.fill', stylers: [{color: '#523735'}]},
+              {elementType: 'labels.text.stroke', stylers: [{color: '#f5f1e6'}]},
+              {
+                featureType: 'administrative',
+                elementType: 'geometry.stroke',
+                stylers: [{color: '#999999'}]
+              },
+              {
+                featureType: 'administrative.land_parcel',
+                elementType: 'geometry.stroke',
+                stylers: [{color: '#dcd2be'}]
+              },
+              {
+                featureType: 'administrative.land_parcel',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#ae9e90'}]
+              },
+              {
+                featureType: 'landscape.natural',
+                elementType: 'geometry',
+                stylers: [{color: '#bbbbbb'}]
+              },
+              {
+                featureType: 'poi',
+                elementType: 'geometry',
+                stylers: [{color: '#dfd2ae'}]
+              },
+              {
+                featureType: 'poi',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#93817c'}]
+              },
+              {
+                featureType: 'poi.park',
+                elementType: 'geometry.fill',
+                stylers: [{color: '#a5b076'}]
+              },
+              {
+                featureType: 'poi.park',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#447530'}]
+              },
+              {
+                featureType: 'road',
+                elementType: 'geometry',
+                stylers: [{color: '#f5f1e6'}]
+              },
+              {
+                featureType: 'road.arterial',
+                elementType: 'geometry',
+                stylers: [{color: '#fdfcf8'}]
+              },
+              {
+                featureType: 'road.highway',
+                elementType: 'geometry',
+                stylers: [{color: '#d6d6c2'}]
+              },
+              {
+                featureType: 'road.highway',
+                elementType: 'geometry.stroke',
+                stylers: [{color: '#d6d6c2'}]
+              },
+              {
+                featureType: 'road.highway.controlled_access',
+                elementType: 'geometry',
+                stylers: [{color: '#d6d6c2'}]
+              },
+              {
+                featureType: 'road.highway.controlled_access',
+                elementType: 'geometry.stroke',
+                stylers: [{color: '#d6d6c2'}]
+              },
+              {
+                featureType: 'road.local',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#d6d6c2'}]
+              },
+              {
+                featureType: 'transit.line',
+                elementType: 'geometry',
+                stylers: [{color: '#dfd2ae'}]
+              },
+              {
+                featureType: 'transit.line',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#8f7d77'}]
+              },
+              {
+                featureType: 'transit.line',
+                elementType: 'labels.text.stroke',
+                stylers: [{color: '#ebe3cd'}]
+              },
+              {
+                featureType: 'transit.station',
+                elementType: 'geometry',
+                stylers: [{color: '#dfd2ae'}]
+              },
+              {
+                featureType: 'water',
+                elementType: 'geometry.fill',
+                stylers: [{color: '#ffffff'}]
+              },
+              {
+                featureType: 'water',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#fefefe'}]
+              }
+            ],
+            {name: 'Styled Map'});
+            
+  map = new google.maps.Map(document.getElementById('mapcanvas'), {
+    zoom: 4,
+    center: new google.maps.LatLng(40, -80),
+    mapTypeControlOptions: {
+            mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
+                    'styled_map']
+          }
+   
+   
+  });  
+  //Associate the styled map with the MapTypeId and set it to display.
+        map.mapTypes.set('styled_map', styledMapType);
+        map.setMapTypeId('styled_map');
+         var links = [];
+         var link2 = [new google.maps.LatLng(23.133, -82.383), new google.maps.LatLng(45.508, -73.587)],
+             link1 = [new google.maps.LatLng(43.700,-79.416), new google.maps.LatLng(45.508, -73.587)];
+         links.push(link1);
+         links.push(link2);
+infoWindow = new google.maps.InfoWindow;
+         for (var i = 0; i < links.length; i++) {
+             doJob(links[i]);
+         }
+
+
+         function doJob(polyline_bounds) {
+         var polyline;
+         console.log(polyline_bounds);
+         polyline = new google.maps.Polyline({
+             path: polyline_bounds,
+              strokeColor: "#000000",
+              strokeOpacity: 0.8,
+              geodesic: true,
+              strokeWeight: 7 
+         });
+
+         polyline.setMap(map);
+
+			//var contentString = polyline_bounds[0] + ',' + polyline_bounds[1] ;
+
+        google.maps.event.addListener(polyline, 'mouseover', function (event) {
+             this.setOptions({
+                 strokeColor: "#0071B3",
+                 strokeWeight: 10
+             });
+             console.log(this.getPath().b[0].lat());
+             //console.log(event.latLng)
+             var lat1 =this.getPath().b[0].lat()
+             var lat2 = this.getPath().b[1].lat()
+             var long1=this.getPath().b[0].lng()
+             var long2 = this.getPath().b[1].lng()
+
+             var GEOCODING1 = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat1 + '%2C' + long1 + '&language=en&key=AIzaSyAJx5hLtIxGsdlVqzCY82z5zf4UNneR6jo';
+             var GEOCODING2 = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat2 + '%2C' + long2 + '&language=en&key=AIzaSyAJx5hLtIxGsdlVqzCY82z5zf4UNneR6jo';
+             var location_one;
+             var path_one = this.getPath().b[0];
+
+            var tb = function(urls){ 
+	            	$.ajax({
+				        'async': false,
+				        'type': "POST",
+				        'global': false,
+				        'dataType': 'html',
+				        'url': urls,
+				        'success': function (data) {
+				        	data = JSON.parse(data)
+				            location_one = data.results[0].formatted_address;
+				        }
+	        	 });
+	             return location_one;
+	        };
+	            	
+
+var tab1 = tb(GEOCODING1)
+var tab2 = tb(GEOCODING2)
+            infoWindow.setContent('<br> FROM : ' + tab1 +'<br> TO : '+ tab2 + '<br>');
+             infoWindow.setPosition(path_one);
+        	 infoWindow.open(map);
+         });
+
+         google.maps.event.addListener(polyline, 'mouseout', function (event) {
+             this.setOptions({
+                 strokeColor: "#000000",
+                 strokeWeight: 7
+             });
+             infoWindow.close(map);
+            // marker.setMap(null);
+         });
+
+
+     }
+
+     function showArrays(event) {
+        // Since this polygon has only one path, we can call getPath() to return the
+        // MVCArray of LatLngs.
+        var vertices = this.getPath();
+
+        var contentString = '<b>Bermuda Triangle polygon</b><br>' +
+            'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
+            '<br>';
+
+        // Iterate over the vertices.
+        for (var i =0; i < vertices.getLength(); i++) {
+          var xy = vertices.getAt(i);
+          contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
+              xy.lng();
+        }
+
+        // Replace the info window's content and position.
+        infoWindow.setContent(contentString);
+        infoWindow.setPosition(event.latLng);
+
+        infoWindow.open(map);
+      }
+ }
+ google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
